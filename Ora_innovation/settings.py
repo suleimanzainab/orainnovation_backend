@@ -31,7 +31,7 @@ SECRET_KEY = "django-insecure-mwm+3z@!%2%v!sa4$ih!(7454*4-ajm9fqt)bsh(bx4p_3itsr
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['10.0.2.2','127.0.0.1',"worthy-quietly-oarfish.ngrok-free.app",]
+ALLOWED_HOSTS = ['10.0.2.2','127.0.0.1',"worthy-quietly-oarfish.ngrok-free.app",'ora-iinova.onrender.com']
 
 
 # Application definition
