@@ -232,7 +232,7 @@ def BookforService(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def AllBookings(request):
-    booking = Bookings.objects.filter(activityUser=request.User)
+    booking = Bookings.objects.filter(activityUser=request.user)
     if booking==None:
         return Response('bookings not found',status=status.HTTP_404_NOT_FOUND)
     else:
@@ -255,14 +255,22 @@ def UpdateBooking(request,id):
     booking = Bookings.objects.get(id=id)
     if booking ==None:
          return Response('Booking not found', status=status.HTTP_404_NOT_FOUND)
-    else:
-       booking.status ='Approved'
-       serializers = Bookstaus_update_Serializers(instance=booking,data=request.data)
-       if serializers.is_valid():
+    elif request.data['status'] == 'Approved':
+         booking.status =request.data['status']
+         serializers = Bookstaus_update_Serializers(instance=booking,data=request.data)
+         if serializers.is_valid():
            serializers.save()
            return Response(serializers.data,status=status.HTTP_201_CREATED)
-       else:
-        return Response(serializers.errors,status=status.HTTP_400_BAD_REQUEST)
+         else:
+          return Response(serializers.errors,status=status.HTTP_400_BAD_REQUEST)
+    elif request.data['status'] == 'rejected':
+        booking.status ='rejected'
+        serializers = Bookstaus_update_Serializers(instance=booking,data=request.data)
+        if serializers.is_valid():
+           serializers.save()
+           return Response(serializers.data,status=status.HTTP_201_CREATED)
+        else:
+          return Response(serializers.errors,status=status.HTTP_400_BAD_REQUEST)
 
 
 # #order
@@ -276,11 +284,11 @@ def OrderforService(request):
     order.orderType = request.data['orderType']
     if (order.orderType == 'pickup'):
         order.pickupDateTime = request.data['pickupDateTime']
-        order.deleveryDateTime = "2024-03-12 13:30:09+00"
+        order.deleveryDateTime = "13:30"
     else:
         order.deleveryDateTime= request.data['delivaryDateTime']
-        order.pickupDateTime ="2024-03-12 13:30:09+00"
-    
+        order.pickupDateTime ="13:30"
+    order.location = request.data['location']
     order.service=Services.objects.get(id=request.data['service'])
     order.activityUser=User.objects.get(id=request.data['activityUser'])
     order.serviceName =Services.objects.get(id=request.data['service']).serviceName
@@ -352,15 +360,19 @@ def AllEvents(request):
 @permission_classes([IsAuthenticated])
 def PostNotification(request):
     notification= Notification()
-    notification.user= request.data['user']
+    notification.user= User.objects.get(id=request.data['user'])
     notification.message = request.data['message']
-    notification.date_of_notifying=request.data['data_of_notifying']
-    notification.save()
-    return Response(notification,status=status.HTTP_201_CREATED)
+    notification.date_of_notifying=request.data['date_of_notifying']
+    serializer =NotifSerializer(notification,data=request.data)
+    if serializer.is_valid():
+       serializer.save()
+       return Response(serializer.data,status=status.HTTP_201_CREATED)
+    else:
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def Allnotification(request):
-    notif=Notification.objects.all()
+    notif=Notification.objects.get(user=request.user)
     serializer =NotifSerializer(notif,many=True)
     return Response(serializer,status=status.HTTP_200_OK)

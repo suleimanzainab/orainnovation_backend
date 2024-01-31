@@ -77,7 +77,7 @@ class ServiceSerializers(serializers.ModelSerializer):
 class OrderSerializers(serializers.ModelSerializer):
      class Meta:
           model =Orders
-          fields =['orderType','service','activityUser']
+          fields =['orderType','service','activityUser','location']
 class OrdersSerializer(serializers.ModelSerializer):
      class Meta:
           model =Orders
@@ -93,7 +93,7 @@ class CartSerializers(serializers.ModelSerializer):
 class BookSerializer(serializers.ModelSerializer):
      class Meta:
           model =Bookings
-          fields =['customerName','customerPhonenumber','dateofBooking','service','activityUser','postName']   
+          fields =['id','customerName','customerPhonenumber','dateofBooking','service','activityUser','postName']   
 class Bookstaus_update_Serializers(serializers.ModelSerializer):
      class Meta:
           model =Bookings

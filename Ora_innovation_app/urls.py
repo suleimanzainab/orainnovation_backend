@@ -56,4 +56,7 @@ urlpatterns = [
    path('list_carts/', views.AllCart, name="OrdersList"),
    path('remove_item/<str:id>', views.DeleteCart, name="removeitem"),
 
+   #notification
+    path('new_notification/', views.PostNotification, name="notificationcreate"),#creation of Enterprise
+
 ]
